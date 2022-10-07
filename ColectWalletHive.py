@@ -6,7 +6,9 @@ import numpy as np
 from time import sleep
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import os
 
+os.chdir('/home/clautc/DataspellProjects/colectar_crypto_hive')
 
 class ColectWalletHive:
     def __init__(self, metadata):
@@ -50,4 +52,6 @@ class ColectWalletHive:
 
         tabla = pd.DataFrame(datos, columns=encabezados)
         return tabla
+
+
 
