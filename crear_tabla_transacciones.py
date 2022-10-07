@@ -1,4 +1,7 @@
+
+import json
 from ColectWalletHive import *
+from functions import *
 
 """
 el objetivo de este script es crear una tabla con transacciones del mes
@@ -17,11 +20,34 @@ el objetivo de este script es crear una tabla con transacciones del mes
 #     'clase_next': "Paginator_btnNext___hYCT"
 # }
 
-with open('otros/otro.txt') as f:
-    path = f.readline()
+insumo_path = '/home/clautc/DataspellProjects/colectar_crypto_hive/otros/otros.txt'
 
-with open(path) as f:
-    metadata = f.read()
+if os.path.exists(insumo_path):
+    with open(insumo_path) as f:
+        path = f.readline()
+
+if os.path.exists(path):
+    with open(path) as f:
+        metadata = json.load(f)
 
 h = ColectWalletHive(metadata)
 df = h.obtener_transacciones()
+
+# procesar data bruta
+
+df = modificar_variables_datetime(df, 'Time')
+df = extraer_string_moneda(df, 'Total')
+
+df.columns = df.columns.str.lower()
+df = df.drop(['transaction'], axis=1)
+
+df_produccion_mensual = analisis_produccion_mensual(df)
+produccion_mensual = df_produccion_mensual.reset_index()
+
+# guardar data procesada
+
+crear_dir_data()
+df.to_feather('data/df_hive.feather')
+produccion_mensual.to_feather('data/df_produccion_mensual.feather')
+
+#%%
